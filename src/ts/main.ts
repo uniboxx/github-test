@@ -1,3 +1,1 @@
-import "../css/global.css";
-
-console.log("Vite Vanilla TS");
+console.log('Vite Vanilla TS');

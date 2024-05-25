@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
   base: '/github-test/',
@@ -21,5 +22,9 @@ export default defineConfig({
       },
     },
   },
-  plugins: [],
+  css: {
+    postcss: {
+      plugins: [autoprefixer],
+    },
+  },
 });
