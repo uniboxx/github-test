@@ -22,9 +22,9 @@ interface AddFn {
   (a: number, b: number): number;
 }
 
-let add: AddFn = (n1, n2) => {
-  return n1 + n2;
-};
+// let add: AddFn = (n1, n2) => {
+//   return n1 + n2;
+// };
 
 interface Named {
   readonly name: string;
