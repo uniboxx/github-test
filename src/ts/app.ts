@@ -46,12 +46,12 @@ type Universal = Combinable & Numeric;
 
 //^ TYPE GUARDS
 
-function add(a: Combinable, b: Combinable) {
-  if (typeof a === 'string' || typeof b === 'string') {
-    return a.toString() + b.toString();
-  }
-  return a + b;
-}
+// function add(a: Combinable, b: Combinable) {
+//   if (typeof a === 'string' || typeof b === 'string') {
+//     return a.toString() + b.toString();
+//   }
+//   return a + b;
+// }
 
 type UnknownEmployee = Employee | Admin;
 
