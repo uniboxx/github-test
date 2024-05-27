@@ -14,8 +14,30 @@ body {
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 	background-color: #101020;
 	color: aliceblue;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 h1 {
 	text-align: center;
+}
+
+button {
+	padding: 1rem 2rem;
+	font-size: 2rem;
+}
+
+input {
+	padding: 0.5rem 1rem;
+}
+
+input::placeholder {
+	color: #999;
+}
+
+button[type="submit"] {
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
 }

@@ -1,183 +1,191 @@
-//^ INTERSECTION TYPES
+//^ DECORATORS
 
-// type Admin = {
-//   name: string;
-//   privileges: string[];
-// };
+// function Logger(constructor: Function) {
+//   console.log('Logging...');
+//   console.log(constructor);
+// }
 
-// type Employee = {
-//   name: string;
-//   startDate: Date;
-// };
+// @Logger
+// class Person2 {
+//   name = 'Max';
 
-// type ElevatedEmployee = Admin & Employee;
+//   constructor() {
+//     console.log('Creating person object...');
+//   }
+// }
 
-// const e1: ElevatedEmployee = {
-//   name: 'Max',
-//   privileges: ['create-server'],
-//   startDate: new Date(),
-// };
+// const pers = new Person2();
 
-interface Admin {
-  name: string;
-  privileges: string[];
+// console.log(pers);
+
+//^ decorator factory
+
+function Logger(logString: string) {
+  console.log('LOGGER FACTORY');
+  return function (constructor: Function) {
+    console.log(logString);
+    console.log(constructor);
+  };
 }
 
-interface Employee {
-  name: string;
-  startDate: Date;
+function WithTemplate(template: string, hookId: string) {
+  console.log('TEMPLATE FACTORY');
+  return function <T extends { new (...args: any[]): { name: string } }>(
+    originalConstructor: T
+  ) {
+    return class extends originalConstructor {
+      constructor(..._: any[]) {
+        super();
+        console.log('Rendering template');
+        const hookEl = document.getElementById(hookId);
+        // const p = new originalConstructor();
+        if (hookEl) {
+          hookEl.innerHTML = template;
+          hookEl.querySelector('h1')!.textContent = this.name;
+        }
+      }
+    };
+  };
 }
 
-interface ElevatedEmployee extends Employee, Admin {}
+// @Logger('LOGGING - PERSON')
+@Logger('L')
+@WithTemplate('<h1>My Person object...</h1>', 'app')
+class Person2 {
+  name = 'Max';
 
-// type ElevatedEmployee = Admin & Employee;
-
-const e1: ElevatedEmployee = {
-  name: 'Max',
-  privileges: ['create-server'],
-  startDate: new Date(),
-};
-
-type Combinable = string | number;
-
-type Numeric = number | boolean;
-
-type Universal = Combinable & Numeric;
-
-//^ TYPE GUARDS
-
-// function add(a: Combinable, b: Combinable) {
-//   if (typeof a === 'string' || typeof b === 'string') {
-//     return a.toString() + b.toString();
-//   }
-//   return a + b;
-// }
-
-const result = add(1, 5);
-
-// type UnknownEmployee = Employee | Admin;
-
-// function printEmployeeInformation(emp: UnknownEmployee) {
-//   console.log('Name: ' + emp.name);
-//   if ('privileges' in emp) {
-//     console.log('Privileges: ' + emp.privileges);
-//   }
-// }
-
-//^ MORE TYPE GUARDS
-
-// class Car {
-//   drive() {
-//     console.log('Driving...');
-//   }
-// }
-
-// class Truck {
-//   drive() {
-//     console.log('Driving a truck...');
-//   }
-
-//   loadCargo(amount: number) {
-//     console.log('Loading cargo... ' + amount);
-//   }
-// }
-
-// type Vehicle = Car | Truck;
-
-// const v1 = new Car();
-// const v2 = new Truck();
-
-// function useVehicle(vehicle: Vehicle) {
-//   vehicle.drive();
-//   if (vehicle instanceof Truck) {
-//     vehicle.loadCargo(3);
-//   }
-// }
-
-// useVehicle(v1);
-// useVehicle(v2);
-
-//^ DISCRIMINETED UNIONS
-
-// interface Bird {
-//   type: 'bird';
-//   flyingSpeed: number;
-// }
-
-// interface Horse {
-//   type: 'horse';
-//   runningSpeed: number;
-// }
-
-// type Animal = Bird | Horse;
-
-// function moveanimal(animal: Animal) {
-//   let speed;
-//   switch (animal.type) {
-//     case 'bird':
-//       speed = animal.flyingSpeed;
-//       break;
-//     case 'horse':
-//       speed = animal.runningSpeed;
-//       break;
-//   }
-//   console.log('Moving at speed: ' + speed);
-// }
-
-// moveanimal({ type: 'bird', flyingSpeed: 10 });
-
-//^ TYPE CASTING
-
-// const paragraph = document.getElementById('message-output');
-
-// const inputEl1 = <HTMLInputElement>document.getElementById('user-input');
-// //================
-// const inputEl2 = document.getElementById('user-input') as HTMLInputElement;
-
-// inputEl1.value = 'Hi there!';
-// inputEl2.value = 'Hi there!';
-
-//^ INDEX PROPERTIES
-
-// interface ErrorContainer {
-//   [prop: string]: string;
-// }
-
-// const errorBag: ErrorContainer = {
-//   email: 'not a valid email!',
-//   username: 'Must start with a capital character!',
-// };
-
-//^ FUNCTION OVERLOADS
-
-function add(a: number, b: number): number;
-function add(a: string, b: string): string;
-function add(a: string, b: number): string;
-function add(a: number, b: string): string;
-function add(a: Combinable, b: Combinable) {
-  if (typeof a === 'string' || typeof b === 'string') {
-    return a.toString() + b.toString();
+  constructor() {
+    console.log('Creating person object...');
   }
-  return a + b;
 }
 
-const result2 = add(1, 5);
-const result3 = add('Hi ', 'there!');
-result3.split(' ');
+// const pers = new Person2();
 
-//^ OPTIONAL CHAINING
+// console.log(pers);
 
-const fetchedUserData = {
-  id: 'u1',
-  name: 'Max',
-  job: { title: 'CEO', description: 'My own company' },
-};
+////////////////////////////////////////////////////
+//////////////////////////////////////////
 
-console.log(fetchedUserData?.job?.title);
+function Log(target: any, propertyName: string | Symbol) {
+  console.log('Property decorator!');
+  console.log(target, propertyName);
+}
 
-//^ NULLISH COALESCING
+function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
+  console.log('Accessor decorator!');
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
+}
 
-const userInput = '';
+function Log3(target: any, name: string, descriptor: PropertyDescriptor) {
+  console.log('Method decorator!');
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
+}
+function Log4(target: any, name: string | symbol, position: number) {
+  console.log('Parameter decorator!');
+  console.log(target);
+  console.log(name);
+  console.log(position);
+}
 
-const storedData = userInput ?? 'DEFAULT';
-console.log(storedData);
+class Product {
+  @Log
+  title: string;
+  #price: number;
+
+  @Log2
+  set price(val: number) {
+    if (val > 0) {
+      this.#price = val;
+    } else {
+      throw new Error('Invalid price - should be positive!');
+    }
+  }
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this.#price = p;
+  }
+
+  @Log3
+  getPriceWithVat(@Log4 tax: number) {
+    return this.#price * (1 + tax);
+  }
+}
+
+const p1 = new Product('Book', 19);
+const p2 = new Product('Book 2', 29);
+
+///////////////////////////////////
+///////////////////////////////////
+
+//^ fare in modo che this faccia sempre riferimento alla classe
+
+function Autobind(
+  _: any,
+  _2: string | symbol | number,
+  descriptor: PropertyDescriptor
+) {
+  const originalMethod = descriptor.value;
+  const adjDescriptor: PropertyDescriptor = {
+    configurable: true,
+    enumerable: false,
+    get() {
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+  };
+  return adjDescriptor;
+}
+
+class Printer {
+  message = 'This works!';
+
+  @Autobind
+  showMessage() {
+    console.log(this.message);
+  }
+}
+
+const p = new Printer();
+
+const button = document.querySelector('button')!;
+button.addEventListener('click', p.showMessage);
+
+//^ VALIDATION WITH DECORATORS
+
+function Required() {}
+
+function PositiveNumber() {}
+
+function validate(obj: object) {}
+
+class Course {
+  @Required
+  title: string;
+  @PositiveNumber
+  price: number;
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this.price = p;
+  }
+}
+
+const courseForm = document.querySelector('form')!;
+courseForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const titleEl = document.getElementById('title') as HTMLInputElement;
+  const priceEl = document.getElementById('price') as HTMLInputElement;
+
+  const title = titleEl.value;
+  const price = +priceEl.value;
+
+  const createCourse = new Course(title, price);
+
+  if (!validate(createCourse)) alert('Invalid input, please try again!');
+  console.log(createCourse);
+});
