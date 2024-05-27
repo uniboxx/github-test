@@ -1,3 +1,30 @@
+//^ autobind decorator
+
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+  // const methodName = context.name;
+  // if (context.private) {
+  //   throw new Error(
+  //     `'autobind' cannot decorate private properties like ${
+  //       methodName as string
+  //     }`
+  //   );
+  // }
+  // context.addInitializer(function () {
+  //   this[methodName] = this[methodName].bind(this);
+  // });
+  const originalMethod = descriptor.value;
+  const adjDescriptor: PropertyDescriptor = {
+    configurable: true,
+    get() {
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+  };
+  return adjDescriptor;
+}
+
+//^ ProjectInput Class
+
 class ProjectInput {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -34,19 +61,20 @@ class ProjectInput {
     ) as HTMLInputElement;
 
     this.#attach();
-    this.#configure();
+    this.configure();
   }
   #attach() {
     this.hostElement.insertAdjacentElement('afterbegin', this.element);
   }
 
-  #submitHandler(e: Event) {
+  @autobind //^ i decoratori non funzionano con campi privati(# di js)
+  private submitHandler(e: Event) {
     e.preventDefault();
     console.log(this.titleInputElement.value);
   }
 
-  #configure() {
-    this.element.addEventListener('submit', this.#submitHandler.bind(this));
+  private configure() {
+    this.element.addEventListener('submit', this.submitHandler);
   }
 }
 
