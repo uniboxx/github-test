@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
-  base: '/github-test/',
+  base: '/understanding-ts-todo-list/',
   root: 'src',
   server: {
     port: 3000,
